@@ -1,26 +1,69 @@
-# Python
+# =========================
+# Python / Bytecode
+# =========================
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 *.log
 
-# Virtual env
+# =========================
+# Virtual Environments
+# =========================
 .venv/
 venv/
+ENV/
+env/
 
-# Env secrets
+# =========================
+# Environment / Secrets
+# =========================
 .env
+.env.*
+!.env.example
 
-# OS
+# =========================
+# OS / Editor
+# =========================
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
 
-# Data / models / indexes (keep repo small)
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Build / Distribution
+# =========================
+build/
+dist/
+*.egg-info/
+
+# =========================
+# Caches / Test / Tools
+# =========================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Project Artifacts (keep repo small)
+# =========================
 data/raw/
 data/processed/
-indexes/
 models/
+indexes/
 
-# Jupyter
-.ipynb_checkpoints/
+# Optional: ignore all large data files anywhere
+*.zip
+*.csv
+*.parquet
+*.pkl
+*.joblib
+*.faiss
+
+# But keep small sample files if you create them explicitly (optional)
+# !data/kb/**/*.md
