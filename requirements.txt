@@ -1,0 +1,15 @@
+openai
+python-dotenv
+pydantic
+fastapi
+uvicorn
+gradio
+requests
+pandas
+numpy
+scikit-learn
+joblib
+
+faiss-cpu
+tqdm
+rapidfuzz
