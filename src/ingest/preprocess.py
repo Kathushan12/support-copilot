@@ -21,6 +21,40 @@ LABEL_COL_CANDIDATES = [
     "Issue",
 ]
 
+# Map CFPB "Product" labels into realistic support categories
+SUPPORT_MAP = {
+    # Fraud / unauthorized
+    "Credit card": "Fraud/Unauthorized",
+    "Credit card or prepaid card": "Fraud/Unauthorized",
+    "Prepaid card": "Fraud/Unauthorized",
+
+    # Credit reporting
+    "Credit reporting": "Credit Reporting",
+    "Credit reporting or other personal consumer reports": "Credit Reporting",
+    "Credit reporting, credit repair services, or other personal consumer reports": "Credit Reporting",
+
+    # Banking
+    "Checking or savings account": "Banking",
+    "Bank account or service": "Banking",
+
+    # Debt / collections
+    "Debt collection": "Debt/Collections",
+    "Debt or credit management": "Debt/Collections",
+
+    # Loans
+    "Student loan": "Loans",
+    "Vehicle loan or lease": "Loans",
+    "Payday loan": "Loans",
+    "Payday loan, title loan, or personal loan": "Loans",
+    "Payday loan, title loan, personal loan, or advance loan": "Loans",
+    "Consumer Loan": "Loans",
+    "Mortgage": "Loans",
+
+    # Payments / transfers
+    "Money transfer, virtual currency, or money service": "Payments/Transfers",
+    "Money transfers": "Payments/Transfers",
+}
+
 def scrub_pii(text: str) -> str:
     if not isinstance(text, str):
         return ""
@@ -56,8 +90,11 @@ def preprocess(input_csv: str) -> str:
     # Keep only rows with meaningful narratives
     df = df[df["text"].str.len() >= 30]
 
-    # Optional: drop "Unknown" or empty labels
-    df = df[df["label"].str.len() > 0]
+    # Map to support categories (unknown/rare -> Other)
+    df["label"] = df["label"].map(lambda x: SUPPORT_MAP.get(x, "Other"))
+
+    # Remove 'Other' from training (keep it as a fallback at inference time)
+    df = df[df["label"] != "Other"]
 
     out_path = os.path.join(PROCESSED_DIR, "cfpb_clean.csv")
     df.to_csv(out_path, index=False)
@@ -67,7 +104,6 @@ if __name__ == "__main__":
     # pick newest csv in raw/
     files = [f for f in os.listdir(RAW_DIR) if f.lower().endswith(".csv") and "cfpb_sample" in f.lower()]
     if not files:
-        # fallback: any csv
         files = [f for f in os.listdir(RAW_DIR) if f.lower().endswith(".csv")]
     if not files:
         raise SystemExit("No CSV found in data/raw. Run download script first.")
